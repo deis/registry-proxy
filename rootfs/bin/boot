@@ -11,7 +11,7 @@ PORT=80
 sed -e "s/%HOST%/$REGISTRY_HOST/g" \
 	-e "s/%PORT%/$REGISTRY_PORT/g" \
 	-e "s/%BIND_PORT%/$PORT/g" \
-	</etc/nginx/conf.d/registry.conf.in >/etc/nginx/conf.d/registry.conf
+	</etc/nginx/conf.d/default.conf.in >/etc/nginx/conf.d/default.conf
 
 # wait for registry to come online
 while ! curl -sS "$REGISTRY_HOST:$REGISTRY_PORT" &>/dev/null; do
