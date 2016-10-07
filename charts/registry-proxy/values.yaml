@@ -1,0 +1,17 @@
+org: "deisci"
+pull_policy: "Always"
+docker_tag: canary
+limits_cpu: "100m"
+limits_memory: "50Mi"
+
+global:
+  # Set the location of Workflow's Registry
+  #
+  # Valid values are:
+  # - on-cluster: Run registry within the Kubernetes cluster
+  # - off-cluster: Use registry outside the Kubernetes cluster (example: dockerhub,quay.io,self-hosted)
+  # - ecr: Use Amazon's ECR
+  # - gcr: Use Google's GCR
+  registry_location: "on-cluster"
+  # The host port to which registry proxy binds to
+  host_port: 5555
