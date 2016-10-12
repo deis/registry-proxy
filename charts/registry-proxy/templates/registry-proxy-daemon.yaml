@@ -1,0 +1,44 @@
+{{- if eq .Values.global.registry_location "on-cluster" }}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: deis-registry-proxy
+  labels:
+    heritage: deis
+  annotations:
+    component.deis.io/version: {{ .Values.docker_tag }}
+spec:
+  selector:
+    matchLabels:
+      app: deis-registry-proxy
+      heritage: deis
+  template:
+    metadata:
+      name: deis-registry-proxy
+      labels:
+        heritage: deis
+        app: deis-registry-proxy
+    spec:
+      containers:
+      - name: deis-registry-proxy
+        image: quay.io/{{.Values.org}}/registry-proxy:{{.Values.docker_tag}}
+        imagePullPolicy: {{.Values.pull_policy}}
+{{- if or (.Values.limits_cpu) (.Values.limits_memory)}}
+        resources:
+          limits:
+{{- if (.Values.limits_cpu) }}
+            cpu: {{.Values.limits_cpu}}
+{{- end}}
+{{- if (.Values.limits_memory) }}
+            memory: {{.Values.limits_memory}}
+{{- end}}
+{{- end}}
+        env:
+        - name: REGISTRY_HOST
+          value: $(DEIS_REGISTRY_SERVICE_HOST)
+        - name: REGISTRY_PORT
+          value: $(DEIS_REGISTRY_SERVICE_PORT)
+        ports:
+        - containerPort: 80
+          hostPort: {{.Values.global.host_port}}
+{{- end }}
