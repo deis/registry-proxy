@@ -17,7 +17,7 @@ clean: check-docker
 	docker rmi $(IMAGE)
 
 docker-build: check-docker
-	docker build --rm -t ${IMAGE} rootfs
+	docker build ${DOCKER_BUILD_TAGS} -t ${IMAGE} rootfs
 	docker tag ${IMAGE} ${MUTABLE_IMAGE}
 
 test:
