@@ -19,6 +19,9 @@ spec:
         heritage: deis
         app: deis-registry-proxy
     spec:
+{{- if (.Values.global.use_cni) }}
+      hostNetwork: true
+{{- end}}
       containers:
       - name: deis-registry-proxy
         image: quay.io/{{.Values.org}}/registry-proxy:{{.Values.docker_tag}}
@@ -38,7 +41,15 @@ spec:
           value: $(DEIS_REGISTRY_SERVICE_HOST)
         - name: REGISTRY_PORT
           value: $(DEIS_REGISTRY_SERVICE_PORT)
+        - name: BIND_ADDR
+{{- if (.Values.global.use_cni) }}
+          value: {{ default "127.0.0.1:5555" .Values.global.registry_proxy_bind_addr | quote }}
+{{- else }}
+          value: {{ default "80" .Values.global.registry_proxy_bind_addr | quote }}
+{{- end }}
+{{- if not (.Values.global.use_cni) }}
         ports:
         - containerPort: 80
           hostPort: {{.Values.global.host_port}}
+{{- end }}
 {{- end }}
